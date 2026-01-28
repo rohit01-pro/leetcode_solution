@@ -2,7 +2,7 @@ class Solution {
     public int minCost(int[][] grid, int k) {
         int m = grid.length;
         int n = grid[0].length;
-        int INF = 1000000000; // Large value that won't overflow when adding grid costs
+        int INF = 1000000000;
 
         int[][][] dist = new int[k + 1][m][n];
         for (int l = 0; l <= k; l++) {
@@ -12,11 +12,8 @@ class Solution {
                 }
             }
         }
-
         dist[0][0][0] = 0;
-
         for (int l = 0; l <= k; l++) {
-            // Increased capacity to handle multiple updates per cell
             MinHeap pq = new MinHeap(m * n * 10); 
             for (int r = 0; r < m; r++) {
                 for (int c = 0; c < n; c++) {
@@ -25,7 +22,6 @@ class Solution {
                     }
                 }
             }
-
             while (!pq.isEmpty()) {
                 Node curr = pq.pop();
                 if (curr.d > dist[l][curr.r][curr.c]) continue;
@@ -42,7 +38,6 @@ class Solution {
                     }
                 }
             }
-
             if (l < k) {
                 int[] valueToMinCost = new int[10001];
                 for (int i = 0; i <= 10000; i++) valueToMinCost[i] = INF;
@@ -58,16 +53,13 @@ class Solution {
                         }
                     }
                 }
-
                 if (!foundAny) continue;
-
                 int currentMin = INF;
                 int[] minFromHigherVal = new int[10001];
                 for (int v = 10000; v >= 0; v--) {
                     if (valueToMinCost[v] < currentMin) currentMin = valueToMinCost[v];
                     minFromHigherVal[v] = currentMin;
                 }
-
                 for (int r = 0; r < m; r++) {
                     for (int c = 0; c < n; c++) {
                         if (minFromHigherVal[grid[r][c]] < dist[l + 1][r][c]) {
@@ -77,19 +69,16 @@ class Solution {
                 }
             }
         }
-
         int result = INF;
         for (int l = 0; l <= k; l++) {
             if (dist[l][m - 1][n - 1] < result) result = dist[l][m - 1][n - 1];
         }
         return result >= INF ? -1 : result;
     }
-
     class Node {
         int d, r, c;
         Node(int d, int r, int c) { this.d = d; this.r = r; this.c = c; }
     }
-
     class MinHeap {
         Node[] heap;
         int size = 0;
